@@ -112,12 +112,15 @@ git --version
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/engtho/blue-zone-workshop.git
-cd blue-zone
+
+# Then make sure you cd into the cloned repository
+cd blue-zone-workshop
 ```
 
 ### 2. Start All Services
 ```bash
 # Build and start all microservices with Kafka
+# It can take some time to build and run it the first time
 docker compose up --build
 
 # This will start:
