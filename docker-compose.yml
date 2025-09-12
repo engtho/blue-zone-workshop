@@ -1,0 +1,152 @@
+services:
+  kafka:
+    image: bitnami/kafka:3.7
+    hostname: kafka
+    environment:
+      # KRaft settings
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      # Listeners
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # Topics
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_CFG_NUM_PARTITIONS: 1
+      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: kafka-topics.sh --bootstrap-server localhost:9092 --list
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: workshop
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    ports:
+      - "8081:8080"
+
+  alarm-service:
+    build:
+      context: ./alarm-service
+      dockerfile: Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - PORT=8080
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - "8080:8080"
+      - "5005:5005" # Debug port
+    volumes:
+      - maven-cache-alarm:/root/.m2
+      - ./alarm-service/src:/workspace/src:delegated
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  customer-service:
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - PORT=8080
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - "8084:8080"
+      - "5006:5005" # Debug port
+    volumes:
+      - maven-cache-customer:/root/.m2
+      - ./customer-service/src:/workspace/src:delegated
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - PORT=8080
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    volumes:
+      - maven-cache-notification:/root/.m2
+      - ./notification-service/src:/workspace/src:delegated
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  ticket-service:
+    build:
+      context: ./ticket-service
+      dockerfile: Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - PORT=8080
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - "8082:8080"
+      - "5007:5005" # Debug port
+    volumes:
+      - maven-cache-ticket:/root/.m2
+      - ./ticket-service/src:/workspace/src:delegated
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src:delegated
+      - ./frontend/public:/app/public:delegated
+      - ./frontend/index.html:/app/index.html:delegated
+      - ./frontend/vite.config.ts:/app/vite.config.ts:delegated
+      - ./frontend/tsconfig.json:/app/tsconfig.json:delegated
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js:delegated
+      - ./frontend/postcss.config.cjs:/app/postcss.config.cjs:delegated
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - alarm-service
+      - customer-service
+      - ticket-service
+
+volumes:
+  maven-cache-alarm:
+  maven-cache-customer:
+  maven-cache-notification:
+  maven-cache-ticket:

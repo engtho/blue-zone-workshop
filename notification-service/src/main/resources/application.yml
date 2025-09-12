@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: notification-service
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      properties:
+        spring.json.add.type.headers: false
+  datasource:
+    url: jdbc:h2:mem:notification;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create # dev only
+    properties:
+      hibernate.format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 1s
+      quiet-period: 500ms
+      additional-paths: /workspace/src
+    livereload:
+      enabled: true
+      port: 35729
+server:
+  port: ${PORT:8080}
+logging:
+  level:
+    root: INFO

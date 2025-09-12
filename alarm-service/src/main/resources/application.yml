@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: alarm-service
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: alarm-service
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      properties:
+        spring.json.add.type.headers: false
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 1s
+      quiet-period: 500ms
+      additional-paths: /workspace/src
+    livereload:
+      enabled: true
+      port: 35729
+server:
+  port: ${PORT:8080}
+logging:
+  level:
+    root: INFO

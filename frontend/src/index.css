@@ -1,0 +1,243 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+
+    /* Blue Zone Custom Colors */
+    --blue-zone-primary: 221.2 83.2% 53.3%;
+    --blue-zone-secondary: 262.1 83.3% 57.8%;
+    --blue-zone-gradient-start: 221.2 83.2% 53.3%;
+    --blue-zone-gradient-end: 262.1 83.3% 57.8%;
+    --blue-zone-text: 222.2 84% 4.9%;
+    --blue-zone-text-muted: 215.4 16.3% 46.9%;
+    --blue-zone-success: 142.1 76.2% 36.3%;
+    --blue-zone-error: 0 84.2% 60.2%;
+    --blue-zone-warning: 38 92% 50%;
+    --blue-zone-info: 221.2 83.2% 53.3%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+
+    /* Blue Zone Custom Colors - Dark Mode */
+    --blue-zone-primary: 217.2 91.2% 59.8%;
+    --blue-zone-secondary: 262.1 83.3% 57.8%;
+    --blue-zone-gradient-start: 217.2 91.2% 59.8%;
+    --blue-zone-gradient-end: 262.1 83.3% 57.8%;
+    --blue-zone-text: 210 40% 98%;
+    --blue-zone-text-muted: 215 20.2% 65.1%;
+    --blue-zone-success: 142.1 70.6% 45.3%;
+    --blue-zone-error: 0 62.8% 30.6%;
+    --blue-zone-warning: 38 92% 50%;
+    --blue-zone-info: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Blue Zone Custom Components */
+@layer components {
+  .blue-zone-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-gradient-start)) 0%,
+      hsl(var(--blue-zone-gradient-end)) 100%
+    );
+  }
+
+  .blue-zone-text {
+    color: hsl(var(--blue-zone-text));
+  }
+
+  .blue-zone-text-muted {
+    color: hsl(var(--blue-zone-text-muted));
+  }
+
+  .blue-zone-success {
+    color: hsl(var(--blue-zone-success));
+  }
+
+  .blue-zone-error {
+    color: hsl(var(--blue-zone-error));
+  }
+
+  .blue-zone-warning {
+    color: hsl(var(--blue-zone-warning));
+  }
+
+  .blue-zone-info {
+    color: hsl(var(--blue-zone-info));
+  }
+
+  /* Toast Customizations */
+  .toaster {
+    --toast-bg: hsl(var(--card));
+    --toast-border: hsl(var(--border));
+    --toast-text: hsl(var(--card-foreground));
+    --toast-success: hsl(var(--blue-zone-success));
+    --toast-error: hsl(var(--blue-zone-error));
+    --toast-warning: hsl(var(--blue-zone-warning));
+    --toast-info: hsl(var(--blue-zone-info));
+  }
+
+  /* Custom toast animations */
+  @keyframes toast-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes toast-out {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Toast styling enhancements */
+  .toaster [data-sonner-toast] {
+    animation: toast-in 0.3s ease-out;
+    backdrop-filter: blur(8px);
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-left: 4px solid;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .toaster [data-sonner-toast][data-type="success"] {
+    border-left-color: hsl(var(--blue-zone-success));
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-success) / 0.1) 0%,
+      hsl(var(--blue-zone-success) / 0.05) 100%
+    );
+    color: hsl(var(--blue-zone-success));
+  }
+
+  .toaster [data-sonner-toast][data-type="error"] {
+    border-left-color: hsl(var(--blue-zone-error));
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-error) / 0.1) 0%,
+      hsl(var(--blue-zone-error) / 0.05) 100%
+    );
+    color: hsl(var(--blue-zone-error));
+  }
+
+  .toaster [data-sonner-toast][data-type="warning"] {
+    border-left-color: hsl(var(--blue-zone-warning));
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-warning) / 0.1) 0%,
+      hsl(var(--blue-zone-warning) / 0.05) 100%
+    );
+    color: hsl(var(--blue-zone-warning));
+  }
+
+  .toaster [data-sonner-toast][data-type="info"] {
+    border-left-color: hsl(var(--blue-zone-info));
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-info) / 0.1) 0%,
+      hsl(var(--blue-zone-info) / 0.05) 100%
+    );
+    color: hsl(var(--blue-zone-info));
+  }
+
+  /* Dark mode toast adjustments */
+  .dark .toaster [data-sonner-toast] {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+      0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Dark mode colored backgrounds */
+  .dark .toaster [data-sonner-toast][data-type="success"] {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-success) / 0.15) 0%,
+      hsl(var(--blue-zone-success) / 0.08) 100%
+    );
+  }
+
+  .dark .toaster [data-sonner-toast][data-type="error"] {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-error) / 0.15) 0%,
+      hsl(var(--blue-zone-error) / 0.08) 100%
+    );
+  }
+
+  .dark .toaster [data-sonner-toast][data-type="warning"] {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-warning) / 0.15) 0%,
+      hsl(var(--blue-zone-warning) / 0.08) 100%
+    );
+  }
+
+  .dark .toaster [data-sonner-toast][data-type="info"] {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--blue-zone-info) / 0.15) 0%,
+      hsl(var(--blue-zone-info) / 0.08) 100%
+    );
+  }
+}
