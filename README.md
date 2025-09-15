@@ -43,7 +43,7 @@ A complete event-driven microservices system that handles telecom network incide
 **1. Install Docker Desktop**
 ```powershell
 # Option 1: Download installer
-# Visit: https://docs.docker.com/desktop/install/windows/
+# Visit: https://docs.docker.com/desktop/setup/install/windows-install/
 # Download and run Docker Desktop Installer.exe
 
 # Option 2: Using Windows Package Manager
@@ -76,7 +76,7 @@ You can use homebrew to install Docker Desktop and Git. To install homebrew chec
 **1. Install Docker Desktop**
 ```bash
 # Option 1: Download from official site
-# Visit: https://docs.docker.com/desktop/install/mac/
+# Visit: https://docs.docker.com/desktop/setup/install/mac-install/
 # Choose the right version for your chip (Intel/Apple Silicon)
 
 # Option 2: Using Homebrew
