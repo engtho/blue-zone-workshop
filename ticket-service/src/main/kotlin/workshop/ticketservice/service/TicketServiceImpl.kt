@@ -1,8 +1,8 @@
 package workshop.ticketservice.service
 
-// import workshop.ticketservice.dto.TicketEvent
-// import workshop.ticketservice.dao.toDto
-// import workshop.ticketservice.producer.TicketEventProducer
+import workshop.ticketservice.dto.TicketEvent
+import workshop.ticketservice.dao.toEventDto
+import workshop.ticketservice.producer.TicketEventProducer
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -16,95 +16,79 @@ import workshop.ticketservice.dao.toApiDto
 import workshop.ticketservice.dto.Ticket
 import workshop.ticketservice.repository.TicketRepository
 
-// TODO: Task 3
 @Service
 class TicketServiceImpl(
-        private val ticketRepository: TicketRepository,
-// private val ticketEventProducer: TicketEventProducer
+    private val ticketRepository: TicketRepository,
+    private val ticketEventProducer: TicketEventProducer
 ) : TicketService {
-        private val log = LoggerFactory.getLogger(TicketServiceImpl::class.java)
+    private val log = LoggerFactory.getLogger(TicketServiceImpl::class.java)
 
-        override fun createTicketForAlarm(
-                alarmId: String,
-                customerId: String,
-                service: String,
-                impact: String
-        ) {
-                try {
-                        val ticketId = UUID.randomUUID().toString()
-                        val description =
-                                "Incident: $service $impact affecting customer $customerId"
-                        val ticket =
-                                TicketEntity(
-                                        ticketId,
-                                        alarmId,
-                                        customerId,
-                                        "OPEN",
-                                        Instant.now().epochSecond,
-                                        description
-                                )
+    override fun createTicketForAlarm(
+        alarmId: String,
+        customerId: String,
+        service: String,
+        impact: String
+    ) {
+        try {
+            val ticketId = UUID.randomUUID().toString()
+            val description =
+                "Incident: $service $impact affecting customer $customerId"
+            val ticket =
+                TicketEntity(
+                    ticketId,
+                    alarmId,
+                    customerId,
+                    "OPEN",
+                    Instant.now().epochSecond,
+                    description
+                )
 
-                        val savedTicket = ticketRepository.save(ticket)
+            val savedTicket = ticketRepository.save(ticket)
 
-                        // publishTicketEvent(savedTicket.toDto())
+            publishTicketEvent(savedTicket.toEventDto())
 
-                        log.info(
-                                "Created ticket {} for alarm {} and customer {}",
-                                ticketId,
-                                alarmId,
-                                customerId
-                        )
-                } catch (e: Exception) {
-                        log.error(
-                                "Error creating ticket for alarm {} and customer {}: {}",
-                                alarmId,
-                                customerId,
-                                e.message,
-                                e
-                        )
-                        throw e
-                }
+            log.info(
+                "Created ticket {} for alarm {} and customer {}",
+                ticketId,
+                alarmId,
+                customerId
+            )
+        } catch (e: Exception) {
+            log.error(
+                "Error creating ticket for alarm {} and customer {}: {}",
+                alarmId,
+                customerId,
+                e.message,
+                e
+            )
+            throw e
         }
+    }
 
-        override fun getAllTickets(): List<Ticket> {
-                val tickets =
-                        ticketRepository.findAll().map {
-                                Ticket(
-                                        it.ticketId,
-                                        it.alarmId,
-                                        it.customerId,
-                                        it.status,
-                                        LocalDateTime.ofEpochSecond(
-                                                it.createdAt,
-                                                0,
-                                                ZoneOffset.UTC
-                                        ),
-                                        it.description
-                                )
-                        }
-                return tickets
-        }
+    override fun getAllTickets(): List<Ticket> {
+        return ticketRepository
+            .findAll()
+            .map { it.toApiDto() }
+    }
 
-        override fun updateTicketStatus(ticketId: String, newStatus: String): Ticket? {
-                val existingTicket =
-                        ticketRepository.findById(ticketId).orElseThrow {
-                                throw ResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Ticket with ID $ticketId not found"
-                                )
-                        }
+    override fun updateTicketStatus(ticketId: String, newStatus: String): Ticket? {
+        val existingTicket =
+            ticketRepository.findById(ticketId).orElseThrow {
+                throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Ticket with ID $ticketId not found"
+                )
+            }
 
-                existingTicket.status = newStatus
-                val savedTicket = ticketRepository.save(existingTicket)
+        existingTicket.status = newStatus
+        val savedTicket = ticketRepository.save(existingTicket)
 
-                // publishTicketEvent(savedTicket.toDto())
+        log.info("Updated ticket {} status to {}", ticketId, newStatus)
+        return savedTicket.toApiDto()
+    }
 
-                log.info("Updated ticket {} status to {}", ticketId, newStatus)
-                return savedTicket.toApiDto()
-        }
-
-        // private fun publishTicketEvent(event: TicketEvent) {
-        //         log.info("Publishing ticket event: {}", event)
-        //         ticketEventProducer.produce(event)
-        // }
+    private fun publishTicketEvent(event: TicketEvent) {
+        log.info("Publishing ticket event: {}", event)
+        ticketEventProducer.produce(event)
+    }
 }

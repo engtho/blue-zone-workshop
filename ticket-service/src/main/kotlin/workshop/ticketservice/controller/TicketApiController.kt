@@ -7,23 +7,21 @@ import workshop.ticketservice.dto.Ticket
 import workshop.ticketservice.service.TicketService
 
 @RestController
-@RequestMapping("/api/tickets")
-class TicketController(private val ticketService: TicketService) {
-    private val log = LoggerFactory.getLogger(TicketController::class.java)
+class TicketApiController(private val ticketService: TicketService): TicketApi {
+    private val log = LoggerFactory.getLogger(TicketApiController::class.java)
 
-    @GetMapping
-    fun all(): ResponseEntity<List<Ticket>> = ResponseEntity.ok(ticketService.getAllTickets())
+    override fun getAllTickets(): ResponseEntity<List<Ticket>> = ResponseEntity.ok(ticketService.getAllTickets())
 
-
-    @PutMapping("/{ticketId}/status")
-    fun updateStatus(
-            @PathVariable ticketId: String,
-            @RequestParam status: String
+    override fun updateStatus(
+            ticketId: String,
+            status: String
     ): ResponseEntity<Ticket> {
         val updatedTicket = ticketService.updateTicketStatus(ticketId, status)
         return if (updatedTicket != null) {
+            log.info("Updated ticket status: $updatedTicket")
             ResponseEntity.ok(updatedTicket)
         } else {
+            log.warn("Could not update ticket status")
             ResponseEntity.notFound().build()
         }
     }

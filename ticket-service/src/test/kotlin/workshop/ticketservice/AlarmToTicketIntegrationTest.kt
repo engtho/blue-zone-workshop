@@ -10,19 +10,10 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.test.annotation.DirtiesContext
+import workshop.ticketservice.dto.TicketEvent
 import workshop.ticketservice.service.TicketService
 import java.time.Duration
 import java.util.concurrent.CopyOnWriteArrayList
-
-// TODO: Remove after TASK 3
-data class TicketEvent(
-    val ticketId: String,
-    val alarmId: String,
-    val customerId: String,
-    val status: String,
-    val createdAt: Long,
-    val description: String = ""
-)
 
 @SpringBootTest
 @EmbeddedKafka(partitions = 1, topics = ["alarms", "tickets"])

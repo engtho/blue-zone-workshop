@@ -19,7 +19,7 @@ class CustomerEntity(
     var services: MutableSet<String> = mutableSetOf()
 }
 
-fun CustomerEntity.toDto() =
+fun CustomerEntity.toApiDto() =
         Customer(
                 id = id,
                 name = name,

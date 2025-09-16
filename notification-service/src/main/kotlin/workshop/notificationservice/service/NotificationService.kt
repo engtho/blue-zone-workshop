@@ -1,5 +1,7 @@
 package workshop.notificationservice.service
 
+import workshop.notificationservice.dto.TicketEvent
+
 interface NotificationService {
-    fun processTicketEvent(ticketEvent: Map<String, Any>)
+    fun processTicketEvent(ticketEvent: TicketEvent)
 }
