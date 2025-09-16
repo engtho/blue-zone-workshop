@@ -7,7 +7,7 @@ import workshop.customerservice.dto.Customer
 import workshop.customerservice.service.CustomerService
 
 @RestController
-class CustomerApiController(private val customerService: CustomerService): CustomerApi {
+class CustomerApiController(private val customerService: CustomerService) : CustomerApi {
     private val logger = LoggerFactory.getLogger(CustomerApiController::class.java)
 
     override fun getCustomerById(id: String): ResponseEntity<Customer> {

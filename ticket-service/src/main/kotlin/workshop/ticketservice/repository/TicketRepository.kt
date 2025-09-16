@@ -14,5 +14,6 @@ interface TicketRepository : JpaRepository<TicketEntity, String> {
 
     fun findByStatus(status: String): List<TicketEntity>
 
-    @Query("SELECT COUNT(*) FROM TicketEntity") override fun count(): Long
+    @Query("SELECT COUNT(*) FROM TicketEntity")
+    override fun count(): Long
 }

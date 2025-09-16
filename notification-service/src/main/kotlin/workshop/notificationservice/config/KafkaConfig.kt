@@ -10,5 +10,5 @@ class KafkaConfig {
 
     @Bean
     fun notificationsTopic(): NewTopic =
-            TopicBuilder.name("notifications").partitions(1).replicas(1).build()
+        TopicBuilder.name("notifications").partitions(1).replicas(1).build()
 }

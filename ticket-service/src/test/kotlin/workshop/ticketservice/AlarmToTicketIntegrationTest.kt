@@ -20,8 +20,11 @@ import java.util.concurrent.CopyOnWriteArrayList
 @DirtiesContext
 class AlarmToTicketIntegrationTest {
 
-    @Autowired private lateinit var ticketService: TicketService
-    @Autowired private lateinit var kafkaTemplate: KafkaTemplate<String, String>
+    @Autowired
+    private lateinit var ticketService: TicketService
+
+    @Autowired
+    private lateinit var kafkaTemplate: KafkaTemplate<String, String>
 
     // Thread-safe list to collect received events
     private val receivedEvents = CopyOnWriteArrayList<TicketEvent>()
@@ -33,33 +36,33 @@ class AlarmToTicketIntegrationTest {
 
         // Given - simulate an alarm event using the correct format
         val alarmEvent =
-                mapOf(
-                        "alarmId" to "integration-alarm-123",
-                        "service" to "BROADBAND",
-                        "impact" to "OUTAGE",
-                        "affectedCustomers" to listOf("integration-customer-456"),
-                        "timestamp" to System.currentTimeMillis()
-                )
+            mapOf(
+                "alarmId" to "integration-alarm-123",
+                "service" to "BROADBAND",
+                "impact" to "OUTAGE",
+                "affectedCustomers" to listOf("integration-customer-456"),
+                "timestamp" to System.currentTimeMillis()
+            )
 
         // Send alarm event to Kafka
         val alarmJson = jacksonObjectMapper().writeValueAsString(alarmEvent)
         kafkaTemplate
-                .send("alarms", "integration-alarm-123", alarmJson)
-                .get() // Wait for send completion
+            .send("alarms", "integration-alarm-123", alarmJson)
+            .get() // Wait for send completion
 
         // Wait for ticket creation using Awaitility
         await().atMost(Duration.ofSeconds(5)).untilAsserted {
             val tickets =
-                    ticketService.getAllTickets().filter { it.alarmId == "integration-alarm-123" }
+                ticketService.getAllTickets().filter { it.alarmId == "integration-alarm-123" }
             assertTrue(tickets.isNotEmpty(), "Should have created ticket for alarm")
         }
 
         // Wait for the CREATED event to be received
         await().atMost(Duration.ofSeconds(5)).untilAsserted {
             val createEvent =
-                    receivedEvents.find {
-                        it.status == "OPEN" && it.alarmId == "integration-alarm-123"
-                    }
+                receivedEvents.find {
+                    it.status == "OPEN" && it.alarmId == "integration-alarm-123"
+                }
             assertNotNull(createEvent, "Should have received ticket create event")
             assertEquals("OPEN", createEvent!!.status)
             assertEquals("integration-alarm-123", createEvent.alarmId)
@@ -78,9 +81,9 @@ class AlarmToTicketIntegrationTest {
         // Wait for the IN_PROGRESS event to be received
         await().atMost(Duration.ofSeconds(5)).untilAsserted {
             val updateEvent =
-                    receivedEvents.find {
-                        it.status == "IN_PROGRESS" && it.ticketId == ticket.ticketId
-                    }
+                receivedEvents.find {
+                    it.status == "IN_PROGRESS" && it.ticketId == ticket.ticketId
+                }
             assertNotNull(updateEvent, "Should have received ticket update event")
             assertEquals(ticket.ticketId, updateEvent!!.ticketId)
             assertEquals("IN_PROGRESS", updateEvent.status)
