@@ -9,7 +9,7 @@ import workshop.ticketservice.dto.TicketEvent
 @Component
 class TicketEventProducerImpl(
     private val kafkaTemplate: KafkaTemplate<String, String>,
-): TicketEventProducer {
+) : TicketEventProducer {
     private val log = LoggerFactory.getLogger(TicketEventProducerImpl::class.java)
     private val objectMapper = jacksonObjectMapper()
 

@@ -9,7 +9,8 @@ import workshop.customerservice.service.CustomerService
 @SpringBootTest
 class CustomerServiceTest {
 
-    @Autowired private lateinit var customerService: CustomerService
+    @Autowired
+    private lateinit var customerService: CustomerService
 
     @Test
     fun `should find customer by id`() {

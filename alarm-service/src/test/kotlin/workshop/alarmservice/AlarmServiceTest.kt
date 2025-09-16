@@ -1,6 +1,7 @@
 package workshop.alarmservice
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -14,18 +15,19 @@ import workshop.alarmservice.service.AlarmService
 @DirtiesContext
 class AlarmServiceTest {
 
-    @Autowired private lateinit var alarmService: AlarmService
+    @Autowired
+    private lateinit var alarmService: AlarmService
 
     @Test
     fun `should start alarm and create event`() {
         // Given
         val request =
-                AlarmRequest(
-                        alarmId = "test-alarm-1",
-                        service = "BROADBAND",
-                        impact = "OUTAGE",
-                        affectedCustomers = listOf("customer-123")
-                )
+            AlarmRequest(
+                alarmId = "test-alarm-1",
+                service = "BROADBAND",
+                impact = "OUTAGE",
+                affectedCustomers = listOf("customer-123")
+            )
 
         // When
         val result = alarmService.create(request)
