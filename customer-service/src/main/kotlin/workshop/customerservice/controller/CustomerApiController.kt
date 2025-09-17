@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*
 import workshop.customerservice.dto.Customer
 import workshop.customerservice.service.CustomerService
 
+//import workshop.customerservice.dao.toApiDto
+
 @RestController
 class CustomerApiController(private val customerService: CustomerService) : CustomerApi {
     private val logger = LoggerFactory.getLogger(CustomerApiController::class.java)
