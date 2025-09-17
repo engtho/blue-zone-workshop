@@ -2,8 +2,10 @@ package workshop.notificationservice.consumer
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import workshop.notificationservice.service.NotificationService
 
+@Component
 class TicketEventConsumerImpl(private val notificationService: NotificationService) : TicketEventConsumer {
     private val logger = LoggerFactory.getLogger(TicketEventConsumerImpl::class.java)
     private val objectMapper = jacksonObjectMapper()

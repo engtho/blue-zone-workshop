@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import workshop.ticketservice.service.TicketService
 
+//import workshop.ticketservice.utils.ALARM_TOPIC
 //import com.fasterxml.jackson.module.kotlin.readValue
 //import org.springframework.kafka.annotation.KafkaListener
 //import workshop.ticketservice.dto.AlarmEvent
+//import workshop.ticketservice.utils.ALARM_CREATED
+//import workshop.ticketservice.utils.TICKET_SERVICE_GROUP_ID
 
 @Component
 class AlarmEventConsumerImpl(private val ticketService: TicketService) : AlarmEventConsumer {
