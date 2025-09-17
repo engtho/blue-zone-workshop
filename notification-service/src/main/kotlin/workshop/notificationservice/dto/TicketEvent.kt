@@ -1,4 +1,4 @@
-package workshop.ticketservice.dto
+package workshop.notificationservice.dto
 
 data class TicketEvent(
     val ticketId: String,
@@ -6,5 +6,5 @@ data class TicketEvent(
     val customerId: String,
     val status: String,
     val createdAt: Long,
-    val description: String = ""
+    val description: String
 )

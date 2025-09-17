@@ -1,4 +1,4 @@
-package workshop.notificationservice.config
+package workshop.ticketservice.config
 
 import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.context.annotation.Bean
@@ -9,6 +9,6 @@ import org.springframework.kafka.config.TopicBuilder
 class KafkaConfig {
 
     @Bean
-    fun notificationsTopic(): NewTopic =
-        TopicBuilder.name("notifications").partitions(1).replicas(1).build()
+    fun ticketsTopic(): NewTopic =
+        TopicBuilder.name("tickets").partitions(1).replicas(1).build()
 }

@@ -7,10 +7,9 @@ import org.springframework.stereotype.Component
 import workshop.alarmservice.dto.AlarmEvent
 
 @Component
-class KafkaAlarmEventProducer(private val kafkaTemplate: KafkaTemplate<String, String>) :
-        AlarmEventProducer {
+class AlarmEventProducerImpl(private val kafkaTemplate: KafkaTemplate<String, String>) : AlarmEventProducer {
 
-    private val log = LoggerFactory.getLogger(KafkaAlarmEventProducer::class.java)
+    private val log = LoggerFactory.getLogger(AlarmEventProducerImpl::class.java)
     private val objectMapper = jacksonObjectMapper()
 
     override fun produce(event: AlarmEvent) {

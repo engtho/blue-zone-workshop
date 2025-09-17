@@ -1,17 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { AppError, createAppError } from "../lib/errorHandler";
-import {
-  AlarmEvent,
-  CreateAlarmFormData,
-  CreateAlarmRequest,
-} from "../schemas";
-import { useErrorHandler } from "./useErrorHandler";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {AppError, createAppError} from "../lib/errorHandler";
+import {AlarmEvent, CreateAlarmFormData, CreateAlarmRequest,} from "../schemas";
+import {useErrorHandler} from "./useErrorHandler";
 
 // Alarm Service API
 const createAlarm = async (alarm: CreateAlarmRequest): Promise<AlarmEvent> => {
   const response = await fetch("/api/alarms", {
-    method: "PUT",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(alarm),
   });

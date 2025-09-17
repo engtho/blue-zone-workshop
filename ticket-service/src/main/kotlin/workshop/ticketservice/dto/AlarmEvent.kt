@@ -1,4 +1,4 @@
-package workshop.alarmservice.dto
+package workshop.ticketservice.dto
 
 data class AlarmEvent(
     val alarmId: String,

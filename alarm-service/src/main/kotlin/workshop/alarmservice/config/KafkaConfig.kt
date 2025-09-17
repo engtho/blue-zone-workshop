@@ -1,9 +1,11 @@
-package workshop.alarmservice
+package workshop.alarmservice.config
 
 import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.TopicBuilder
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
 class KafkaConfig {
@@ -12,8 +14,8 @@ class KafkaConfig {
 
     @Bean
     fun kafkaTemplate(
-            factory: org.springframework.kafka.core.ProducerFactory<String, String>
-    ): org.springframework.kafka.core.KafkaTemplate<String, String> {
-        return org.springframework.kafka.core.KafkaTemplate(factory)
+        factory: ProducerFactory<String, String>
+    ): KafkaTemplate<String, String> {
+        return KafkaTemplate(factory)
     }
 }
