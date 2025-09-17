@@ -12,8 +12,12 @@ class NotificationServiceImpl(
 ) : NotificationService {
     private val logger = LoggerFactory.getLogger(NotificationServiceImpl::class.java)
 
-    override fun processTicketEvent(ticketEvent: TicketEvent) {
-        TODO("TASK 6, not yet implemented")
+    override fun processTicketCreatedEvent(ticketEvent: TicketEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun processTicketUpdatedEvent(ticketEvent: TicketEvent) {
+        TODO("Not yet implemented")
     }
 
     private fun createNotificationMessage(ticketId: String, status: String): String {
