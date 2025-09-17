@@ -4,8 +4,6 @@ import workshop.ticketservice.dto.TicketEvent
 import workshop.ticketservice.dao.toEventDto
 import workshop.ticketservice.producer.TicketEventProducer
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.UUID
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -15,6 +13,8 @@ import workshop.ticketservice.dao.TicketEntity
 import workshop.ticketservice.dao.toApiDto
 import workshop.ticketservice.dto.Ticket
 import workshop.ticketservice.repository.TicketRepository
+import workshop.ticketservice.utils.TICKET_CREATED
+import workshop.ticketservice.utils.TICKET_UPDATED
 
 @Service
 class TicketServiceImpl(
@@ -45,7 +45,7 @@ class TicketServiceImpl(
 
             val savedTicket = ticketRepository.save(ticket)
 
-            publishTicketEvent(savedTicket.toEventDto())
+            publishTicketEvent(savedTicket.toEventDto(TICKET_CREATED))
 
             log.info(
                 "Created ticket {} for alarm {} and customer {}",
@@ -82,6 +82,8 @@ class TicketServiceImpl(
 
         existingTicket.status = newStatus
         val savedTicket = ticketRepository.save(existingTicket)
+
+        publishTicketEvent(savedTicket.toEventDto(TICKET_UPDATED))
 
         log.info("Updated ticket {} status to {}", ticketId, newStatus)
         return savedTicket.toApiDto()

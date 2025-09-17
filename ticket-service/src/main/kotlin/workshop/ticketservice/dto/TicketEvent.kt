@@ -1,6 +1,7 @@
 package workshop.ticketservice.dto
 
 data class TicketEvent(
+    val eventType: String,
     val ticketId: String,
     val alarmId: String,
     val customerId: String,
