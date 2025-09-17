@@ -38,12 +38,13 @@ export const PRIORITY_LABELS: Record<CustomerPriority, string> = {
 
 // Available customers (should be moved to API or config)
 export const AVAILABLE_CUSTOMERS: Omit<
-  Customer,
-  "email" | "phone" | "services" | "priority" | "region"
+    Customer,
+    "email" | "phone" | "services" | "priority" | "region"
 >[] = [
-  { id: "c-42", name: "Alice Johnson" },
-  { id: "c-7", name: "Bob Smith" },
-  { id: "c-100", name: "Carol Wilson" },
-  { id: "c-200", name: "David Brown" },
-  { id: "c-300", name: "Eva Davis" },
+  { id: "c-42", name: "Ada Lovelace" },
+  { id: "c-7", name: "Grace Hopper" },
+  { id: "c-100", name: "Oslo Universitetssykehus" },
+  { id: "c-200", name: "Katherine Johnson" },
+  { id: "c-300", name: "Bergen Brannvesen" },
 ];
+
