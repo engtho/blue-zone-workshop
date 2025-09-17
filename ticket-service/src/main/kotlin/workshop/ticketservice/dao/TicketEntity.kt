@@ -20,7 +20,7 @@ class TicketEntity(
     @Column(length = 500) var description: String = ""
 )
 
-// TODO: Task 3
+// TASK 3.2
 fun TicketEntity.toEventDto(): TicketEvent {
     return TicketEvent(
         ticketId = ticketId,
