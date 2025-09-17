@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import workshop.alarmservice.dto.AlarmEvent
 import workshop.alarmservice.dto.AlarmRequest
 import workshop.alarmservice.producer.AlarmEventProducer
+import workshop.alarmservice.utils.ALARM_CREATED
 import java.time.Instant
 
 @Service
@@ -14,6 +15,7 @@ class AlarmServiceImpl(private val producer: AlarmEventProducer) : AlarmService 
     override fun create(request: AlarmRequest): AlarmEvent {
         val event =
             AlarmEvent(
+                eventType = ALARM_CREATED,
                 alarmId = request.alarmId,
                 service = request.service,
                 impact = request.impact,

@@ -21,8 +21,9 @@ class TicketEntity(
 )
 
 // TASK 3.2
-fun TicketEntity.toEventDto(): TicketEvent {
+fun TicketEntity.toEventDto(eventType: String): TicketEvent {
     return TicketEvent(
+        eventType = eventType,
         ticketId = ticketId,
         alarmId = alarmId,
         customerId = customerId,

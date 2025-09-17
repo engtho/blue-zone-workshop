@@ -6,6 +6,8 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 import workshop.ticketservice.dto.TicketEvent
 
+//import workshop.ticketservice.utils.TICKET_TOPIC
+
 @Component
 class TicketEventProducerImpl(
     private val kafkaTemplate: KafkaTemplate<String, String>,
