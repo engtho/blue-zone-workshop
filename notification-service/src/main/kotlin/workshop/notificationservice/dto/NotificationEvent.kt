@@ -1,12 +1,11 @@
 package workshop.notificationservice.dto
 
-// TODO: TASK 6
 data class NotificationEvent(
-    val eventType: String
-    /* ... */
-) {
-    // TODO: Remove init block when the constructor is complete
-    init {
-        throw NotImplementedError("TASK 6: Not implemented yet")
-    }
-}
+    val eventType: String,
+    val notificationId: String,
+    val ticketId: String,
+    val customerId: String,
+    val message: String,
+    val status: String,
+    val timestamp: Long
+)

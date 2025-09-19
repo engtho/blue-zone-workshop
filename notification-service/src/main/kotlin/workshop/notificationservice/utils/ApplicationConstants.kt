@@ -10,3 +10,4 @@ const val NOTIFICATION_SERVICE_GROUP_ID = "notification-service"
 // Event types
 const val TICKET_CREATED = "ticketCreated"
 const val TICKET_UPDATED = "ticketUpdated"
+const val NOTIFICATION_CREATED = "notificationCreated"

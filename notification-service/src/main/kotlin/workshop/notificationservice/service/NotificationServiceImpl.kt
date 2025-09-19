@@ -3,22 +3,43 @@ package workshop.notificationservice.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import workshop.notificationservice.dao.NotificationEntity
+import workshop.notificationservice.dao.toKafkaDto
 import workshop.notificationservice.dto.TicketEvent
+import workshop.notificationservice.producer.NotificationEventProducer
 import workshop.notificationservice.repository.NotificationRepository
+import workshop.notificationservice.utils.NOTIFICATION_CREATED
+import java.time.Instant
 
 @Service
 class NotificationServiceImpl(
     private val notificationRepository: NotificationRepository,
+    private val notificationEventProducer: NotificationEventProducer
 ) : NotificationService {
     private val logger = LoggerFactory.getLogger(NotificationServiceImpl::class.java)
 
     override fun processTicketCreatedEvent(ticketEvent: TicketEvent) {
-        TODO("Not yet implemented")
+        createAndSendNotification(ticketEvent)
     }
 
     override fun processTicketUpdatedEvent(ticketEvent: TicketEvent) {
-        TODO("Not yet implemented")
+        createAndSendNotification(ticketEvent)
     }
+
+    private fun createAndSendNotification(ticketEvent: TicketEvent) {
+        val message = createNotificationMessage(ticketEvent.ticketId, ticketEvent.status)
+
+        val notificationDao = NotificationEntity(
+            ticketId = ticketEvent.ticketId,
+            customerId = ticketEvent.customerId,
+            message = message,
+            status = "SENT",
+            timestamp = Instant.now().epochSecond,
+        )
+        val savedNotification = notificationRepository.save(notificationDao)
+        sendNotificationToCustomer(savedNotification)
+        notificationEventProducer.produce(savedNotification.toKafkaDto(NOTIFICATION_CREATED))
+    }
+
 
     private fun createNotificationMessage(ticketId: String, status: String): String {
         return when (status.uppercase()) {
