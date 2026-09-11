@@ -156,6 +156,15 @@ describe('dashboard shell', () => {
         expect(html).not.toContain('animate-ping');
     });
 
+    it('keeps the footer at the bottom when the page is short', () => {
+        const html = renderToStaticMarkup(<App />);
+
+        // min-h-screen alone leaves the spare viewport height *below* the footer,
+        // so the shell must be a flex column with a growing main region.
+        expect(html).toContain('flex min-h-screen flex-col');
+        expect(html).toMatch(/<main[^>]*\bflex-1\b/);
+    });
+
     it('keeps the alarm form before the ticket column and requires customer selection', () => {
         const html = renderToStaticMarkup(<App />);
 
