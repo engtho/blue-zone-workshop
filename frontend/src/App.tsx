@@ -19,7 +19,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <ErrorBoundary>
-                <div className="min-h-screen bg-muted/30 text-foreground">
+                <div className="flex min-h-screen flex-col bg-muted/30 text-foreground">
                     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
                         <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                             <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ function App() {
                         </div>
                     </header>
 
-                    <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
+                    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:py-8">
                         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
                             <div className="lg:col-span-1 lg:sticky lg:top-24">
                                 <AlarmCreator />
