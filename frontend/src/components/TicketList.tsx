@@ -63,7 +63,7 @@ const TicketList: React.FC = () => {
 
     return (
         <Card>
-            <CardHeader className="gap-4 border-b">
+            <CardHeader className="gap-4 space-y-0 border-b p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="space-y-1">
                         <CardTitle className="flex items-center gap-2 text-xl">
@@ -95,15 +95,17 @@ const TicketList: React.FC = () => {
 
                 <TicketStats tickets={tickets} />
 
-                <TicketFilters
-                    filters={filters}
-                    onFiltersChange={setFilters}
-                    uniqueCustomers={uniqueCustomers}
-                    isExpanded={isFilterPanelOpen}
-                />
+                {(isFilterPanelOpen || hasActiveFilters) && (
+                    <TicketFilters
+                        filters={filters}
+                        onFiltersChange={setFilters}
+                        uniqueCustomers={uniqueCustomers}
+                        isExpanded={isFilterPanelOpen}
+                    />
+                )}
             </CardHeader>
 
-            <CardContent className="space-y-4 pt-6">
+            <CardContent className="space-y-3 p-3 sm:p-4">
                 {isResolveError && resolveError && (
                     <ErrorMessage
                         error={resolveError}

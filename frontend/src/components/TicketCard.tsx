@@ -28,13 +28,13 @@ interface DetailProps {
 }
 
 const Detail: React.FC<DetailProps> = ({ icon: Icon, label, children }) => (
-    <div className="flex items-start gap-2.5">
+    <div className="flex min-w-0 items-start gap-2">
         <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         <div className="min-w-0">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 {label}
             </p>
-            <div className="truncate text-sm text-foreground">{children}</div>
+            <div className="text-sm text-foreground [overflow-wrap:anywhere]">{children}</div>
         </div>
     </div>
 );
@@ -52,11 +52,14 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onResolve, isResolving 
                 aria-hidden="true"
             />
 
-            <CardHeader className="gap-3 pb-4 pl-7">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0 space-y-1.5">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span className="font-mono font-medium tracking-wide">
+            <CardHeader className="space-y-0 p-4 pb-3 pl-5">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                    <div className="min-w-0 flex-1 basis-60 space-y-1">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                            <span
+                                className="min-w-0 font-mono font-medium tracking-wide [overflow-wrap:anywhere]"
+                                title={ticket.ticketId}
+                            >
                                 {formatTicketReference(ticket.ticketId)}
                             </span>
                             <span aria-hidden="true">•</span>
@@ -64,12 +67,12 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onResolve, isResolving 
                                 {formatRelativeTime(ticket.createdAt)}
                             </time>
                         </div>
-                        <CardTitle className="text-base font-semibold leading-snug">
+                        <CardTitle className="text-base font-semibold leading-snug [overflow-wrap:anywhere]">
                             {ticket.description}
                         </CardTitle>
                     </div>
 
-                    <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <Badge variant={PRIORITY_BADGE_VARIANT[priority]}>
                             {PRIORITY_LABELS[priority]}
                         </Badge>
@@ -81,70 +84,68 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onResolve, isResolving 
                 </div>
             </CardHeader>
 
-            <CardContent className="space-y-4 pl-7">
-                <div className="rounded-lg border bg-muted/40 p-4">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Detail icon={User} label="Customer">
-                            {customer ? (
-                                <>
-                                    <span className="font-medium">{customer.name}</span>
-                                    <span className="ml-2 font-mono text-xs text-muted-foreground">
+            <CardContent className="space-y-3 px-4 pb-4 pl-5">
+                {customer ? (
+                    <div className="space-y-3">
+                        <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2">
+                            <Detail icon={User} label="Customer">
+                                <div className="flex flex-wrap items-baseline gap-x-2">
+                                    <span className="min-w-0 font-medium">{customer.name}</span>
+                                    <span className="min-w-0 font-mono text-xs text-muted-foreground">
                                         {customer.id}
                                     </span>
-                                </>
-                            ) : (
-                                <span className="font-mono">{ticket.customerId}</span>
-                            )}
-                        </Detail>
-
-                        {customer ? (
-                            <>
-                                <Detail icon={MapPin} label="Region">
-                                    {customer.region}
-                                </Detail>
-                                <Detail icon={Mail} label="Email">
-                                    <a
-                                        href={`mailto:${customer.email}`}
-                                        className="hover:text-primary hover:underline"
-                                    >
-                                        {customer.email}
-                                    </a>
-                                </Detail>
-                                <Detail icon={Phone} label="Phone">
-                                    {customer.phone}
-                                </Detail>
-                            </>
-                        ) : (
-                            <Detail icon={User} label="Customer details">
-                                <span className="text-muted-foreground">Not available</span>
+                                </div>
                             </Detail>
+                            <Detail icon={MapPin} label="Region">
+                                {customer.region}
+                            </Detail>
+                            <Detail icon={Mail} label="Email">
+                                <a
+                                    href={`mailto:${customer.email}`}
+                                    className="hover:text-primary hover:underline"
+                                >
+                                    {customer.email}
+                                </a>
+                            </Detail>
+                            <Detail icon={Phone} label="Phone">
+                                {customer.phone}
+                            </Detail>
+                        </div>
+
+                        {customer.services.length > 0 && (
+                            <div className="flex flex-wrap items-center gap-1.5">
+                                <span className="mr-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                    Services
+                                </span>
+                                {customer.services.map((service) => (
+                                    <Badge key={service} variant="outline" className="bg-background">
+                                        {service}
+                                    </Badge>
+                                ))}
+                            </div>
                         )}
                     </div>
-
-                    {customer && customer.services.length > 0 && (
-                        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t pt-3">
-                            <span className="mr-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                                Services
-                            </span>
-                            {customer.services.map((service) => (
-                                <Badge key={service} variant="outline" className="bg-background">
-                                    {service}
-                                </Badge>
-                            ))}
+                ) : (
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                        <div className="flex min-w-0 items-center gap-2">
+                            <User className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                            <span className="text-muted-foreground">Customer</span>
+                            <span className="min-w-0 font-mono [overflow-wrap:anywhere]">{ticket.customerId}</span>
                         </div>
-                    )}
-                </div>
+                        <span className="text-xs text-muted-foreground">Details not available</span>
+                    </div>
+                )}
 
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3">
+                    <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                             <Bell className="h-3.5 w-3.5" aria-hidden="true" />
                             Alarm
                             <span className="font-mono">{ticket.alarmId.slice(0, 8)}</span>
                         </span>
-                        <span className="flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                            {formatTimestamp(ticket.createdAt)}
+                        <span className="flex min-w-0 items-center gap-1.5">
+                            <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                            <time dateTime={ticket.createdAt}>{formatTimestamp(ticket.createdAt)}</time>
                         </span>
                     </div>
 
