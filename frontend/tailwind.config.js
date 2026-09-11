@@ -34,10 +34,12 @@ module.exports = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+          badge: "hsl(var(--badge-destructive-background))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
+          emphasis: "hsl(var(--badge-muted-emphasis))",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
@@ -54,14 +56,17 @@ module.exports = {
         success: {
           DEFAULT: "hsl(var(--blue-zone-success))",
           foreground: "hsl(var(--primary-foreground))",
+          emphasis: "hsl(var(--badge-success-emphasis))",
         },
         warning: {
           DEFAULT: "hsl(var(--blue-zone-warning))",
           foreground: "hsl(var(--primary-foreground))",
+          emphasis: "hsl(var(--badge-warning-emphasis))",
         },
         info: {
           DEFAULT: "hsl(var(--blue-zone-info))",
           foreground: "hsl(var(--primary-foreground))",
+          emphasis: "hsl(var(--badge-info-emphasis))",
         },
       },
       borderRadius: {

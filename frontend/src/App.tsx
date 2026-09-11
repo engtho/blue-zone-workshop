@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RadioTower } from 'lucide-react';
+import { Clock, RadioTower } from 'lucide-react';
 import AlarmCreator from './components/AlarmCreator';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import TicketList from './components/TicketList';
@@ -21,7 +21,7 @@ function App() {
             <ErrorBoundary>
                 <div className="min-h-screen bg-muted/30 text-foreground">
                     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-                        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+                        <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                             <div className="flex items-center gap-3">
                                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                                     <RadioTower className="h-5 w-5" aria-hidden="true" />
@@ -34,13 +34,9 @@ function App() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                                <span className="relative flex h-2 w-2" aria-hidden="true">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
-                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
-                                </span>
-                                <span className="hidden sm:inline">Live · refreshes every 10s</span>
-                                <span className="sm:hidden">Live</span>
+                            <div className="flex shrink-0 items-center gap-2 text-xs font-medium text-muted-foreground">
+                                <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                                <span>Auto-refresh: 10s</span>
                             </div>
                         </div>
                     </header>
@@ -51,7 +47,7 @@ function App() {
                                 <AlarmCreator />
                             </div>
 
-                            <div className="lg:col-span-2">
+                            <div className="min-w-0 lg:col-span-2">
                                 <TicketList />
                             </div>
                         </div>

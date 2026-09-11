@@ -75,9 +75,13 @@ export const getTicketPriority = (
   ticket: TicketWithCustomer
 ): CustomerPriority => ticket.customer?.priority ?? CustomerPriority.STANDARD;
 
-/** Short, human readable ticket reference, e.g. `TKT-3F9A1C2B`. */
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Keep readable IDs intact; shorten only UUIDs for display. */
 export const formatTicketReference = (ticketId: string): string =>
-  `TKT-${ticketId.slice(0, 8).toUpperCase()}`;
+  UUID_PATTERN.test(ticketId)
+    ? `TKT-${ticketId.slice(0, 8).toUpperCase()}`
+    : ticketId;
 
 export const formatTimestamp = (value: string): string =>
   new Date(value).toLocaleString("nb-NO", {
