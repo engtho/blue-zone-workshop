@@ -8,7 +8,8 @@ interface MultiSelectOption {
     label: string;
 }
 
-interface MultiSelectProps {
+interface MultiSelectProps
+    extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "onChange" | "children"> {
     options: MultiSelectOption[];
     value: string[];
     onChange: (value: string[]) => void;
@@ -17,7 +18,7 @@ interface MultiSelectProps {
 }
 
 const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
-    ({ options, value, onChange, placeholder = "Select items...", className }, ref) => {
+    ({ options, value, onChange, placeholder = "Select items...", className, ...triggerProps }, ref) => {
         const [isOpen, setIsOpen] = React.useState(false);
         const [searchTerm, setSearchTerm] = React.useState("");
 
@@ -44,10 +45,12 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
             <div ref={ref} className={cn("relative", className)}>
                 {/* Trigger Button */}
                 <Button
+                    {...triggerProps}
                     variant="outline"
                     role="combobox"
+                    type="button"
                     aria-expanded={isOpen}
-                    className="w-full justify-between"
+                    className="w-full justify-between font-normal"
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     <span className={selectedOptions.length === 0 ? "text-muted-foreground" : ""}>
@@ -103,6 +106,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
                                 <Button
                                     variant="ghost"
                                     size="sm"
+                                    type="button"
                                     onClick={handleClearAll}
                                     className="w-full text-xs"
                                 >

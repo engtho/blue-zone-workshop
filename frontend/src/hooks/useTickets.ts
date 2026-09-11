@@ -180,6 +180,9 @@ export const useUpdateTicketStatus = () => {
     updateTicketStatus: mutation.mutate,
     updateTicketStatusAsync: mutation.mutateAsync,
     isUpdating: mutation.isPending,
+    pendingTicketId: mutation.isPending
+      ? mutation.variables?.ticketId
+      : undefined,
     isSuccess: mutation.isSuccess,
     isError,
     error,
@@ -195,6 +198,7 @@ export const useResolveTicket = () => {
     updateTicketStatus,
     updateTicketStatusAsync,
     isUpdating,
+    pendingTicketId,
     isSuccess,
     isError,
     error,
@@ -213,6 +217,7 @@ export const useResolveTicket = () => {
     resolveTicket,
     resolveTicketAsync,
     isResolving: isUpdating,
+    resolvingTicketId: pendingTicketId,
     isSuccess,
     isError,
     error,

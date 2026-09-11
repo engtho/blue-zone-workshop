@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CheckCircle2, Siren } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateAlarm } from '../hooks/useAlarms';
@@ -12,10 +13,23 @@ import {
     ServiceType
 } from '../schemas';
 import { ErrorMessage } from './ErrorMessage';
+import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+import { MultiSelect, MultiSelectOption } from './ui/multi-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+
+const DEFAULT_VALUES: CreateAlarmFormData = {
+    service: 'BROADBAND',
+    impact: 'OUTAGE',
+    affectedCustomers: []
+};
+
+const CUSTOMER_OPTIONS: MultiSelectOption[] = AVAILABLE_CUSTOMERS.map((customer) => ({
+    value: customer.id,
+    label: `${customer.name} (${customer.id})`
+}));
 
 const AlarmCreator: React.FC = () => {
     const {
@@ -29,52 +43,44 @@ const AlarmCreator: React.FC = () => {
 
     const form = useForm<CreateAlarmFormData>({
         resolver: zodResolver(createAlarmSchema),
-        defaultValues: {
-            service: "BROADBAND" as const,
-            impact: "OUTAGE" as const,
-            affectedCustomers: []
-        }
+        defaultValues: DEFAULT_VALUES
     });
 
     const onSubmit = (data: CreateAlarmFormData) => {
-        console.log("Form submitted with data:", data);
-        console.log("Form validation errors:", form.formState.errors);
         createAlarm(data);
     };
+
+    const selectedCustomers = form.watch('affectedCustomers');
 
     // Reset form on successful creation
     useEffect(() => {
         if (isSuccess) {
-            form.reset({
-                service: "BROADBAND" as const,
-                impact: "OUTAGE" as const,
-                affectedCustomers: []
-            });
+            form.reset(DEFAULT_VALUES);
             reset();
         }
     }, [isSuccess, form, reset]);
 
     return (
         <Card className="w-full">
-            <CardHeader>
-                <CardTitle>Create Service Alarm</CardTitle>
+            <CardHeader className="border-b">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                    <Siren className="h-5 w-5 text-destructive" aria-hidden="true" />
+                    Create Service Alarm
+                </CardTitle>
                 <CardDescription>
-                    Create a new service alarm to generate support tickets
+                    Raise a new service alarm to generate support tickets
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
                 <Form {...form}>
-                    <form onSubmit={(e) => {
-                        console.log("Form submit event triggered");
-                        form.handleSubmit(onSubmit)(e);
-                    }} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                         <FormField
                             control={form.control}
                             name="service"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Service</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select a service" />
@@ -99,7 +105,7 @@ const AlarmCreator: React.FC = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Impact Level</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select impact level" />
@@ -125,32 +131,26 @@ const AlarmCreator: React.FC = () => {
                                 <FormItem>
                                     <FormLabel>Affected Customers</FormLabel>
                                     <FormControl>
-                                        <select
-                                            multiple
+                                        <MultiSelect
+                                            options={CUSTOMER_OPTIONS}
                                             value={field.value}
-                                            onChange={(e) => {
-                                                const selectedOptions = Array.from(e.target.selectedOptions);
-                                                const selectedIds = selectedOptions.map(option => option.value);
-                                                field.onChange(selectedIds);
-                                            }}
-                                            className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                        >
-                                            {AVAILABLE_CUSTOMERS.map(customer => (
-                                                <option key={customer.id} value={customer.id}>
-                                                    {customer.name} ({customer.id})
-                                                </option>
-                                            ))}
-                                        </select>
+                                            onChange={field.onChange}
+                                            placeholder="Select customers"
+                                        />
                                     </FormControl>
-                                    <div className="text-sm text-muted-foreground">
-                                        Hold Ctrl (Windows) or Cmd (Mac) to select multiple customers
-                                    </div>
-                                    {field.value.length > 0 && (
-                                        <div className="text-sm text-muted-foreground">
-                                            Selected: {field.value.map(id =>
-                                                AVAILABLE_CUSTOMERS.find(c => c.id === id)?.name || id
-                                            ).join(', ')}
+                                    {selectedCustomers.length > 0 ? (
+                                        <div className="flex flex-wrap gap-1.5 pt-1">
+                                            {selectedCustomers.map((customerId) => (
+                                                <Badge key={customerId} variant="secondary" className="font-normal">
+                                                    {AVAILABLE_CUSTOMERS.find((c) => c.id === customerId)?.name ??
+                                                        customerId}
+                                                </Badge>
+                                            ))}
                                         </div>
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground">
+                                            Select at least one customer to raise the alarm.
+                                        </p>
                                     )}
                                     <FormMessage />
                                 </FormItem>
@@ -159,18 +159,18 @@ const AlarmCreator: React.FC = () => {
 
                         <Button
                             type="submit"
-                            disabled={isCreating || form.watch('affectedCustomers').length === 0}
+                            disabled={isCreating || selectedCustomers.length === 0}
                             className="w-full"
-                            onClick={() => console.log("Button clicked, isCreating:", isCreating, "customers:", form.watch('affectedCustomers').length)}
                         >
-                            {isCreating ? 'Creating Alarm...' : 'Create Alarm'}
+                            {isCreating ? 'Creating alarm…' : 'Create alarm'}
                         </Button>
                     </form>
                 </Form>
 
                 {isSuccess && (
-                    <div className="mt-4 p-3 rounded-md bg-green-50 text-green-700 border border-green-200">
-                        ✅ Alarm created successfully! Tickets will be generated automatically.
+                    <div className="mt-4 flex items-start gap-2 rounded-md border border-success/20 bg-success/10 p-3 text-sm text-success">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                        <span>Alarm created. Tickets will be generated automatically.</span>
                     </div>
                 )}
 

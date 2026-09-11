@@ -1,226 +1,148 @@
-import React from 'react';
+import { Inbox, SlidersHorizontal, TicketIcon } from 'lucide-react';
+import React, { useState } from 'react';
 import { useTicketFilters } from '../hooks/useTicketFilters';
 import { useResolveTicket, useTicketsSorted } from '../hooks/useTickets';
-import {
-  PRIORITY_LABELS,
-  STATUS_LABELS,
-  TicketWithCustomer
-} from '../schemas';
+import { TicketWithCustomer } from '../schemas';
+import { TicketFilters as TicketFiltersType } from '../types/filters';
+import { EmptyState } from './EmptyState';
 import { ErrorMessage } from './ErrorMessage';
 import { TicketListSkeleton } from './LoadingSkeletons';
+import TicketCard from './TicketCard';
 import TicketFilters from './TicketFilters';
+import TicketStats from './TicketStats';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
+const EMPTY_FILTERS: TicketFiltersType = {
+    services: [],
+    statuses: [],
+    priorities: [],
+    customers: []
+};
+
+const countActiveFilters = (filters: TicketFiltersType) =>
+    Object.values(filters).reduce(
+        (total, filter) => total + (Array.isArray(filter) ? filter.length : 0),
+        0
+    );
 
 const TicketList: React.FC = () => {
-  const {
-    tickets,
-    isLoading,
-    isError,
-    error
-  } = useTicketsSorted();
+    const { tickets, isLoading, isError, error } = useTicketsSorted();
 
-  const {
-    resolveTicket,
-    isResolving,
-    isError: isResolveError,
-    error: resolveError
-  } = useResolveTicket();
+    const {
+        resolveTicket,
+        resolvingTicketId,
+        isError: isResolveError,
+        error: resolveError
+    } = useResolveTicket();
 
-  // Use the custom filter hook
-  const {
-    filters,
-    setFilters,
-    filteredTickets,
-    uniqueCustomers,
-    hasActiveFilters
-  } = useTicketFilters(tickets);
+    // Use the custom filter hook
+    const {
+        filters,
+        setFilters,
+        filteredTickets,
+        uniqueCustomers,
+        hasActiveFilters
+    } = useTicketFilters(tickets);
 
+    const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  const getPriorityBadge = (priority?: number) => {
-    const priorityValue = priority || 2; // Default to STANDARD
-    if (priorityValue === 1) { // CRITICAL
-      return <Badge variant="destructive">{PRIORITY_LABELS[1]}</Badge>;
-    }
-    return <Badge variant="secondary">{PRIORITY_LABELS[priorityValue as 1 | 2 | 3]}</Badge>;
-  };
+    if (isLoading) return <TicketListSkeleton />;
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "OPEN":
-        return <Badge variant="default">{STATUS_LABELS[status]}</Badge>;
-      case "RESOLVED":
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{STATUS_LABELS[status]}</Badge>;
-      case "IN_PROGRESS":
-        return <Badge variant="secondary">{STATUS_LABELS[status]}</Badge>;
-      case "CLOSED":
-        return <Badge variant="outline">{STATUS_LABELS[status]}</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+    if (isError) return (
+        <ErrorMessage
+            error={error}
+            onRetry={() => window.location.reload()}
+            title="Failed to load tickets"
+            description="Unable to fetch tickets from the server. This might be due to a network issue or the backend service being unavailable."
+        />
+    );
 
-  if (isLoading) return <TicketListSkeleton />;
+    const activeFilterCount = countActiveFilters(filters);
 
-  if (isError) return (
-      <ErrorMessage
-          error={error}
-          onRetry={() => window.location.reload()}
-          title="Failed to load tickets"
-          description="Unable to fetch tickets from the server. This might be due to a network issue or the backend service being unavailable."
-      />
-  );
+    return (
+        <Card>
+            <CardHeader className="gap-4 border-b">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="space-y-1">
+                        <CardTitle className="flex items-center gap-2 text-xl">
+                            <TicketIcon className="h-5 w-5 text-primary" aria-hidden="true" />
+                            Support Tickets
+                        </CardTitle>
+                        <CardDescription>
+                            {hasActiveFilters
+                                ? `Showing ${filteredTickets.length} of ${tickets.length} tickets`
+                                : 'Real-time ticket management and monitoring'}
+                        </CardDescription>
+                    </div>
 
-  return (
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle>
-                Support Tickets ({filteredTickets.length})
-                {hasActiveFilters && (
-                    <span className="text-sm font-normal text-muted-foreground ml-2">
-                                    (filtered from {tickets.length})
-                                </span>
-                )}
-              </CardTitle>
-              <CardDescription>
-                Real-time ticket management and monitoring
-              </CardDescription>
-            </div>
-          </div>
-
-          {/* Filter Controls */}
-          <div className="mt-4">
-            <TicketFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                uniqueCustomers={uniqueCustomers}
-            />
-          </div>
-        </CardHeader>
-        <CardContent>
-          {tickets.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No tickets found. Create an alarm to generate tickets.</p>
-              </div>
-          ) : filteredTickets.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No tickets match the current filters.</p>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFilters({
-                      services: [],
-                      statuses: [],
-                      priorities: [],
-                      customers: []
-                    })}
-                    className="mt-2"
-                >
-                  Clear Filters
-                </Button>
-              </div>
-          ) : (
-              <div className="space-y-4">
-                {filteredTickets.map((ticket: TicketWithCustomer) => (
-                    <Card key={ticket.ticketId} className="hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-4">
-                        <div className="flex justify-between items-start">
-                          <div className="space-y-1">
-                            <CardTitle className="text-xl">
-                              Ticket #{ticket.ticketId.slice(0, 8)}
-                            </CardTitle>
-                            <CardDescription className="text-base">
-                              {ticket.description}
-                            </CardDescription>
-                          </div>
-                          <div className="flex gap-2">
-                            {getPriorityBadge(ticket.customer?.priority)}
-                            {getStatusBadge(ticket.status)}
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {/* Customer Information Section */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-3">
-                            <div>
-                              <p className="text-sm font-semibold text-muted-foreground mb-1">Customer</p>
-                              <p className="text-base font-medium">{ticket.customer?.name || ticket.customerId}</p>
-                            </div>
-
-                            {ticket.customer && (
-                                <>
-                                  <div>
-                                    <p className="text-sm font-semibold text-muted-foreground mb-1">Contact</p>
-                                    <div className="space-y-1">
-                                      <p className="text-sm">{ticket.customer.email}</p>
-                                      <p className="text-sm">{ticket.customer.phone}</p>
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    <p className="text-sm font-semibold text-muted-foreground mb-1">Services</p>
-                                    <div className="flex flex-wrap gap-1">
-                                      {ticket.customer.services.map((service, index) => (
-                                          <Badge key={index} variant="outline" className="text-xs">
-                                            {service}
-                                          </Badge>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </>
-                            )}
-                          </div>
-
-                          <div className="space-y-3">
-                            {ticket.customer && (
-                                <div>
-                                  <p className="text-sm font-semibold text-muted-foreground mb-1">Region</p>
-                                  <p className="text-sm">{ticket.customer.region}</p>
-                                </div>
-                            )}
-
-                            <div>
-                              <p className="text-sm font-semibold text-muted-foreground mb-1">Alarm ID</p>
-                              <p className="text-sm font-mono bg-muted px-2 py-1 rounded">{ticket.alarmId.slice(0, 8)}</p>
-                            </div>
-
-                            <div>
-                              <p className="text-sm font-semibold text-muted-foreground mb-1">Created</p>
-                              <p className="text-sm">{new Date(ticket.createdAt).toLocaleString("nb-NO")}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Action Section */}
-                        {ticket.status === "OPEN" && (
-                            <div className="pt-4 border-t">
-                              <Button
-                                  onClick={() => resolveTicket(ticket.ticketId)}
-                                  className="w-full md:w-auto"
-                                  disabled={isResolving}
-                              >
-                                {isResolving ? 'Resolving...' : '✅ Resolve Ticket'}
-                              </Button>
-                              {isResolveError && resolveError && (
-                                  <div className="mt-2 text-xs text-destructive">
-                                    Error: {resolveError.message}
-                                  </div>
-                              )}
-                            </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsFilterPanelOpen((isOpen) => !isOpen)}
+                        aria-expanded={isFilterPanelOpen}
+                    >
+                        <SlidersHorizontal aria-hidden="true" />
+                        Filters
+                        {activeFilterCount > 0 && (
+                            <Badge variant="default" className="px-1.5">
+                                {activeFilterCount}
+                            </Badge>
                         )}
-                      </CardContent>
-                    </Card>
-                ))}
-              </div>
-          )}
-        </CardContent>
-      </Card>
-  );
+                    </Button>
+                </div>
+
+                <TicketStats tickets={tickets} />
+
+                <TicketFilters
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    uniqueCustomers={uniqueCustomers}
+                    isExpanded={isFilterPanelOpen}
+                />
+            </CardHeader>
+
+            <CardContent className="space-y-4 pt-6">
+                {isResolveError && resolveError && (
+                    <ErrorMessage
+                        error={resolveError}
+                        title="Failed to resolve ticket"
+                        description="The ticket status could not be updated. Please try again."
+                        showRetry={false}
+                    />
+                )}
+
+                {tickets.length === 0 ? (
+                    <EmptyState
+                        icon={Inbox}
+                        title="No tickets yet"
+                        description="Create a service alarm to generate support tickets."
+                    />
+                ) : filteredTickets.length === 0 ? (
+                    <EmptyState
+                        icon={SlidersHorizontal}
+                        title="No tickets match the current filters"
+                        description="Try removing one or more filters to see more results."
+                        action={
+                            <Button variant="outline" size="sm" onClick={() => setFilters(EMPTY_FILTERS)}>
+                                Clear filters
+                            </Button>
+                        }
+                    />
+                ) : (
+                    filteredTickets.map((ticket: TicketWithCustomer) => (
+                        <TicketCard
+                            key={ticket.ticketId}
+                            ticket={ticket}
+                            onResolve={resolveTicket}
+                            isResolving={resolvingTicketId === ticket.ticketId}
+                        />
+                    ))
+                )}
+            </CardContent>
+        </Card>
+    );
 };
 
 export default TicketList;
