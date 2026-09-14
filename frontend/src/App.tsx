@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Clock, RadioTower } from 'lucide-react';
 import AlarmCreator from './components/AlarmCreator';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import TicketList from './components/TicketList';
@@ -18,29 +19,44 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <ErrorBoundary>
-                <div className="min-h-screen bg-background">
-                    <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-8 px-4 mb-8">
-                        <div className="max-w-7xl mx-auto text-center">
-                            <h1 className="text-4xl font-bold mb-2">Blue Zone - Telecom Incident Management</h1>
-                            <p className="text-lg opacity-90">Real-time monitoring and ticket management dashboard</p>
+                <div className="flex min-h-screen flex-col bg-muted/30 text-foreground">
+                    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+                        <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                                    <RadioTower className="h-5 w-5" aria-hidden="true" />
+                                </span>
+                                <div className="leading-tight">
+                                    <p className="font-semibold tracking-tight">Blue Zone</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        Telecom Incident Management
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex shrink-0 items-center gap-2 text-xs font-medium text-muted-foreground">
+                                <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                                <span>Auto-refresh: 10s</span>
+                            </div>
                         </div>
                     </header>
 
-                    <main className="max-w-7xl mx-auto px-4 pb-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div className="lg:col-span-1">
+                    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:py-8">
+                        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+                            <div className="lg:col-span-1 lg:sticky lg:top-24">
                                 <AlarmCreator />
                             </div>
 
-                            <div className="lg:col-span-2">
+                            <div className="min-w-0 lg:col-span-2">
                                 <TicketList />
                             </div>
                         </div>
                     </main>
 
-                    <footer className="bg-muted/50 py-4 px-4 mt-8">
-                        <div className="max-w-7xl mx-auto text-center text-muted-foreground">
-                            <p>Blue Zone Workshop - Kafka Microservices Demo</p>
+                    <footer className="border-t bg-background">
+                        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-1 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:px-6">
+                            <p>Blue Zone Workshop</p>
+                            <p>Event-driven microservices with Kafka</p>
                         </div>
                     </footer>
                 </div>

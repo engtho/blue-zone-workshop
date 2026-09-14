@@ -148,8 +148,8 @@ docker compose ps
 ### 5. Verify Everything Works
 1. Open the frontend at http://localhost:3000
 2. Verify that you can see three tickets to the right
-3. Click "Create Alarm" to simulate a network incident
-4. Verify that a green box with "Alarm created successfully!" is shown
+3. Click "Create alarm" to simulate a network incident
+4. Verify that a green box with "Alarm created." is shown
 5. Verify that you can access http://localhost:8081
 
 You are now ready for the workshop and can stop the services with:

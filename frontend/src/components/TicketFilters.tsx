@@ -13,12 +13,15 @@ interface TicketFiltersProps {
     filters: TicketFiltersType;
     onFiltersChange: (filters: TicketFiltersType) => void;
     uniqueCustomers: (Customer | undefined)[];
+    /** Controls of the filter panel; active filter badges stay visible either way. */
+    isExpanded?: boolean;
 }
 
 const TicketFilters: React.FC<TicketFiltersProps> = ({
     filters,
     onFiltersChange,
-    uniqueCustomers
+    uniqueCustomers,
+    isExpanded = true
 }) => {
     const updateFilter = (key: keyof TicketFiltersType, value: string[]) => {
         onFiltersChange({
@@ -87,57 +90,63 @@ const TicketFilters: React.FC<TicketFiltersProps> = ({
     }));
 
     return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Filters</h3>
-            </div>
-
+        <div className="space-y-3">
             {/* Filter Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Services Filter */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Services</label>
-                    <MultiSelect
-                        options={serviceOptions}
-                        value={filters.services}
-                        onChange={(value) => updateFilter('services', value)}
-                        placeholder="All Services"
-                    />
-                </div>
+            {isExpanded && (
+                <div className="grid grid-cols-1 gap-3 rounded-lg border bg-muted/40 p-4 sm:grid-cols-2 xl:grid-cols-4">
+                    {/* Services Filter */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Services
+                        </label>
+                        <MultiSelect
+                            options={serviceOptions}
+                            value={filters.services}
+                            onChange={(value) => updateFilter('services', value)}
+                            placeholder="All Services"
+                        />
+                    </div>
 
-                {/* Statuses Filter */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Statuses</label>
-                    <MultiSelect
-                        options={statusOptions}
-                        value={filters.statuses}
-                        onChange={(value) => updateFilter('statuses', value)}
-                        placeholder="All Statuses"
-                    />
-                </div>
+                    {/* Statuses Filter */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Statuses
+                        </label>
+                        <MultiSelect
+                            options={statusOptions}
+                            value={filters.statuses}
+                            onChange={(value) => updateFilter('statuses', value)}
+                            placeholder="All Statuses"
+                        />
+                    </div>
 
-                {/* Priorities Filter */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Priorities</label>
-                    <MultiSelect
-                        options={priorityOptions}
-                        value={filters.priorities}
-                        onChange={(value) => updateFilter('priorities', value)}
-                        placeholder="All Priorities"
-                    />
-                </div>
+                    {/* Priorities Filter */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Priorities
+                        </label>
+                        <MultiSelect
+                            options={priorityOptions}
+                            value={filters.priorities}
+                            onChange={(value) => updateFilter('priorities', value)}
+                            placeholder="All Priorities"
+                        />
+                    </div>
 
-                {/* Customers Filter */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Customers</label>
-                    <MultiSelect
-                        options={customerOptions}
-                        value={filters.customers}
-                        onChange={(value) => updateFilter('customers', value)}
-                        placeholder="All Customers"
-                    />
+                    {/* Customers Filter */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Customers
+                        </label>
+                        <MultiSelect
+                            options={customerOptions}
+                            value={filters.customers}
+                            onChange={(value) => updateFilter('customers', value)}
+                            placeholder="All Customers"
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Active Filter Badges */}
             <FilterBadges

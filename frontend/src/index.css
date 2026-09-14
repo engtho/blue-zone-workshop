@@ -36,6 +36,13 @@
     --blue-zone-error: 0 84.2% 60.2%;
     --blue-zone-warning: 38 92% 50%;
     --blue-zone-info: 221.2 83.2% 53.3%;
+
+    /* Badge-only contrast tokens; shared toast and alarm colors stay unchanged. */
+    --badge-success-emphasis: 142.8 64.2% 24.1%;
+    --badge-warning-emphasis: 22.7 82.5% 31.4%;
+    --badge-info-emphasis: 224.3 76.3% 48%;
+    --badge-muted-emphasis: 215.4 16.3% 42%;
+    --badge-destructive-background: 0 73.7% 41.8%;
   }
 
   .dark {
@@ -70,6 +77,12 @@
     --blue-zone-error: 0 62.8% 30.6%;
     --blue-zone-warning: 38 92% 50%;
     --blue-zone-info: 217.2 91.2% 59.8%;
+
+    --badge-success-emphasis: 142.1 70.6% 45.3%;
+    --badge-warning-emphasis: 38 92% 50%;
+    --badge-info-emphasis: 217.2 91.2% 59.8%;
+    --badge-muted-emphasis: 215 20.2% 65.1%;
+    --badge-destructive-background: 0 62.8% 30.6%;
   }
 }
 
