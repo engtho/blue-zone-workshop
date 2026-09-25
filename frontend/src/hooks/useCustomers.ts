@@ -5,6 +5,7 @@ import { Customer } from "../schemas";
 import { useErrorHandler } from "./useErrorHandler";
 
 // Customer Service API
+// TASK 5
 export const getCustomer = async (id: string): Promise<Customer> => {
   const response = await fetch(`/api/customers/${id}`);
   if (!response.ok) throw new Error("Failed to fetch customer");

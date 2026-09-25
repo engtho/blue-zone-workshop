@@ -17,7 +17,7 @@ class AlarmEventConsumerImpl(private val ticketService: TicketService) : AlarmEv
     private val log = LoggerFactory.getLogger(AlarmEventConsumerImpl::class.java)
     private val objectMapper = jacksonObjectMapper()
 
-
+    // TASK 2
     @KafkaListener(topics = [ALARM_TOPIC], groupId = TICKET_SERVICE_GROUP_ID) // Read from the kafka topic "alarms"
     override fun consumeAlarmEvent(alarmEventJson: String) {
         try {

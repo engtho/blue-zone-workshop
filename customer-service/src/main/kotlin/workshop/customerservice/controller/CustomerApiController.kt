@@ -12,6 +12,7 @@ import workshop.customerservice.dao.toApiDto
 class CustomerApiController(private val customerService: CustomerService) : CustomerApi {
     private val logger = LoggerFactory.getLogger(CustomerApiController::class.java)
 
+    // TASK 4
     override fun getCustomerById(@PathVariable id: String): ResponseEntity<Customer> {     
         logger.info("Request to get customer: {}", id)
         

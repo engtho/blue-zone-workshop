@@ -1,6 +1,8 @@
 package workshop.notificationservice.dao
 
+import com.sun.beans.introspect.PropertyInfo
 import jakarta.persistence.*
+import workshop.notificationservice.dto.NotificationEvent
 
 @Entity
 @Table(name = "notifications")
@@ -13,4 +15,15 @@ class NotificationEntity(
     @Column(nullable = false) var timestamp: Long = 0L
 )
 
-// TODO: TASK 6
+// TASK 6c - Add mapping from Entity to Event
+fun NotificationEntity.toEventDto(eventType: String): NotificationEvent {
+    return NotificationEvent(
+        eventType = eventType,
+        notificationId = id!!,
+        ticketId = ticketId,
+        customerId = customerId,
+        status = status,
+        message = message,
+        timestamp = timestamp
+    )
+}
