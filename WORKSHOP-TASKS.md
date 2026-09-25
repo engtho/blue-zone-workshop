@@ -107,6 +107,7 @@ override fun consumeAlarmEvent(alarmEventJson: String) {
 ```
 
 4. **Test that it works**:
+   - Restart the ticket service: `docker compose restart ticket-service`
    - Create an alarm in the [frontend](http://localhost:3000)
    - Check that tickets appear to the right
 
@@ -144,6 +145,7 @@ override fun produce(ticketEvent: TicketEvent) {
 ```
 
 6. **Test that it works**:
+   - Restart the ticket service: `docker compose restart ticket-service`
    - Create an alarm in the [frontend](http://localhost:3000)
    - Using [Kafka UI](http://localhost:8081) - Verify that a `ticketCreated` event has been published to the `tickets` topic
 
@@ -183,6 +185,7 @@ override fun getCustomerById(@PathVariable id: String): ResponseEntity<Customer>
 ```
 
 4. **Test that it works**:
+   - Restart the customer service: `docker compose restart customer-service`
    - Open the [Swagger UI connected to the application](http://localhost:8084) and try the endpoint with an ID that exists in the database, e.g. c-42 which should return:
 
 ```json
@@ -218,6 +221,7 @@ return response.json();
 ```
 
 2. **Test that it works**:
+   - Restart the frontend: `docker compose restart frontend`
    - Verify that tickets display customer information instead of customer IDs
 
 ---
@@ -252,6 +256,7 @@ Create a service that listens to ticket events from Kafka and processes them int
 - Produce `notificationCreated` events to the `notifications` Kafka topic for successfully sent notifications
 
 3. **Test that it works**:
+   - Restart the notification service: `docker compose restart notification-service`
    - Create an alarm in the [frontend](http://localhost:3000)
    - Resolve the ticket
    - Using [Kafka UI](http://localhost:8081) - Verify that `notificationCreated` events (with the expected payload) have been published to the `notifications` topic
